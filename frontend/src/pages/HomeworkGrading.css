@@ -1,0 +1,106 @@
+/* src/pages/HomeworkGrading.css (可以保持或微调之前的CSS) */
+.homework-grading-page .grading-header {
+    background: #001529;
+    padding: 0 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 为了让标题和登录按钮分开 */
+  }
+  
+  .homework-grading-page .ant-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 稍微减弱阴影 */
+  }
+  
+  .homework-grading-page .ant-card-head {
+    font-weight: 600;
+    background-color: #fafafa; /* 给卡片头部一个浅色背景 */
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  
+  .grading-result-display {
+    padding: 10px;
+  }
+  
+  .grading-result-display .ant-divider-inner-text {
+    font-weight: 500;
+  }
+  
+  .grading-result-display .feedback-section {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #e8e8e8;
+  }
+  
+  .grading-result-display .feedback-section ul {
+    padding-left: 20px;
+    margin-bottom: 0;
+  }
+  
+  .grading-result-display .feedback-section li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  
+  .grading-result-display .feedback-section li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .grading-result-display .ant-tag {
+    font-size: 1em;
+    padding: 4px 8px;
+  }
+  
+  /* Steps 组件的样式调整 */
+  .homework-grading-page .ant-steps {
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  
+  
+  /* 暗色模式下的特定调整 */
+  body.dark-mode .homework-grading-page .grading-header {
+    background: #141414;
+  }
+  
+  body.dark-mode .homework-grading-page .ant-card {
+    background-color: #1f1f1f;
+    border-color: #303030;
+  }
+  body.dark-mode .homework-grading-page .ant-card-head {
+    background-color: #2a2a2a;
+    border-bottom-color: #303030;
+  }
+  
+  body.dark-mode .homework-grading-page .feedback-section {
+    background-color: #262626;
+    border-color: #3a3a3a;
+  }
+  
+  body.dark-mode .homework-grading-page .ant-steps {
+    background: #1f1f1f;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-title,
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-description {
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after,
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-tail::after {
+    background-color: #1890ff; /* 或者你的暗色主题主色 */
+  }
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-tail::after {
+     background-color: #3a3a3a;
+  }
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon,
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-process .ant-steps-item-icon > .ant-steps-icon {
+    color: #1890ff !important;
+  }
+  body.dark-mode .homework-grading-page .ant-steps .ant-steps-item-wait .ant-steps-item-icon > .ant-steps-icon {
+    color: rgba(255,255,255,0.25) !important;
+  }

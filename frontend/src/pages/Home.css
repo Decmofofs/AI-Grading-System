@@ -1,0 +1,20 @@
+/* src/pages/Home.css */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  
+.welcome-container {
+display: inline-block;
+opacity: 0;
+/* 渐变文字 */
+background: linear-gradient(90deg, #ff7e5f, #feb47b);
+/* 标准属性，兼容非 WebKit 内核 */
+background-clip: text;
+/* WebKit 专用，旧浏览器也能支持 */
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+color: transparent;
+/* 1.5s 淡入，延迟 0.5s 开始 */
+animation: fadeIn 1.5s forwards 0.5s;
+}

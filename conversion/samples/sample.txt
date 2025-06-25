@@ -1,0 +1,2 @@
+Hello, this is a test text file.
+你好，这是一个测试文本文件。

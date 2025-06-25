@@ -1,0 +1,461 @@
+/* ==========================================================================
+   主题颜色变量定义 (Theme Color Variables)
+   ========================================================================== */
+
+/* 亮色模式 (默认) */
+:root {
+  --bg-color: #f0f2f5;
+  --header-bg-color: #ffffff;
+  --card-bg-color: #ffffff;
+  --text-color: rgba(0, 0, 0, 0.88);
+  --text-secondary-color: rgba(0, 0, 0, 0.45);
+  --inner-card-bg-color: #fafafa;
+  --border-color: #d9d9d9;
+  --primary-color: #1677ff;
+  --header-title-color: var(--text-color);
+  --header-button-color: var(--text-secondary-color);
+  --header-button-hover-bg: #e6f4ff;
+  --header-control-area-bg: rgba(0, 0, 0, 0.04); /* 【新增】控件区域背景 */
+  --header-welcome-text-color: var(--text-secondary-color); /* 【新增】欢迎语颜色 */
+  --modal-bg-color: #ffffff; /* 【新增】Modal背景色 */
+  --footer-bg-color: transparent;
+  --footer-text-color: var(--text-secondary-color);
+  --bubble-user-color: #1890ff;
+  --bubble-bot-color: #ffffff;
+  --alert-success-bg: #f6ffed;
+  --alert-success-border: #b7eb8f;
+  --sidebar-bg-color: #f0f2f5;
+  --icon-success-color: #52c41a;
+  --icon-error-color: #f5222d;
+}
+
+/* 暗色模式 */
+.dark-mode {
+  --bg-color: #000000;
+  --header-bg-color: #1f1f1f;
+  --inner-card-bg-color: #262626;
+  --card-bg-color: #1d1d1d;
+  --text-color: rgba(255, 255, 255, 0.85);
+  --text-secondary-color: rgba(255, 255, 255, 0.45);
+  --border-color: #424242;
+  --primary-color: #1677ff;
+  --header-title-color: white;
+  --header-button-color: rgba(255, 255, 255, 0.85);
+  --header-button-hover-bg: rgba(255, 255, 255, 0.1);
+  --header-control-area-bg: rgba(255, 255, 255, 0.08); /* 【新增】控件区域背景 */
+  --header-welcome-text-color: rgba(255, 255, 255, 0.65); /* 【新增】欢迎语颜色 */
+  --modal-bg-color: #1d1d1d; /* 【新增】Modal背景色 */
+  --footer-bg-color: #141414;
+  --footer-text-color: var(--text-secondary-color);
+  --bubble-user-color: #096dd9;
+  --bubble-bot-color: #262626;
+  --sidebar-bg-color: #1f1f1f;
+  --alert-success-bg: #1f2b1c;
+  --alert-success-border: #274916;
+  --icon-success-color: #73d13d;
+  --icon-error-color: #ff4d4f;
+}
+
+/* 护眼模式 (棕色系) */
+.eyecare-mode {
+  --bg-color: #f4e9d8;
+  --header-bg-color: #efe5d5;
+  --card-bg-color: #f9f3e9;
+  --inner-card-bg-color: #f4e9d8;
+  --text-color: #5d4037;
+  --text-secondary-color: #8d6e63;
+  --border-color: #d7ccc8;
+  --primary-color: #795548;
+  --header-title-color: var(--text-color);
+  --header-button-color: var(--text-secondary-color);
+  --header-button-hover-bg: rgba(0, 0, 0, 0.06);
+  --header-control-area-bg: rgba(93, 64, 55, 0.08); /* 【新增】控件区域背景 */
+  --header-welcome-text-color: var(--text-secondary-color); /* 【新增】欢迎语颜色 */
+  --modal-bg-color: #f9f3e9; /* 【新增】Modal背景色 */
+  --footer-bg-color: #f4e9d8;
+  --footer-text-color: var(--text-secondary-color);
+  --bubble-user-color: #795548;
+  --bubble-bot-color: #f9f3e9;
+  --sidebar-bg-color: #f4e9d8;
+  --alert-success-bg: #f3f9e6;
+  --alert-success-border: #c4d6a6;
+  --icon-success-color: #6a9a2a;
+  --icon-error-color: #c94042;
+}
+
+
+/* ==========================================================================
+   全局基础与过渡效果 (Global Base & Transitions)
+   ========================================================================== */
+body, html {
+  margin: 0; padding: 0; height: 100%;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+#root { height: 100%; }
+body, .ant-layout, .ant-layout-header, .ant-layout-content, .ant-layout-footer, .ant-card, .ant-input, .ant-select-selector, .ant-btn, .ant-alert, .ant-radio-button-wrapper, .ant-steps-item-container, .bubble, .sidebar {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ==========================================================================
+   布局与自定义组件样式 (Layout & Custom Component Styles)
+   ========================================================================== */
+
+/* --- 【【核心修复】】: 认证页面布局样式 --- */
+.auth-layout {
+    min-height: 100vh;
+}
+.auth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--header-bg-color) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+.auth-header .header-title, .auth-header .header-title:hover {
+    color: var(--header-title-color) !important;
+    margin-bottom: 0 !important;
+}
+.auth-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 20px;
+}
+.auth-form-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 32px;
+    background: var(--card-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.dark-mode .auth-form-container {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* 【新增修复】: 强制认证表单内的文字和链接颜色 */
+.auth-form-container .ant-typography {
+    color: var(--text-color) !important;
+}
+.auth-form-container .ant-typography-secondary {
+    color: var(--text-secondary-color) !important;
+}
+.auth-form-container a {
+    color: var(--primary-color) !important;
+}
+
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus,
+.ant-input:-webkit-autofill:active {
+    /* * 利用你已经定义好的CSS变量，这是一个非常优雅的解决方案。
+     * 浏览器会自动根据当前主题 (light, dark, eyecare) 解析这些变量的值。
+     */
+    
+    /* 1. 强制设置填充后的文字颜色为当前主题的文字颜色 */
+    -webkit-text-fill-color: var(--text-color) !important;
+
+    /* 2. 使用一个巨大的内阴影“伪造”背景颜色，并使用当前主题的卡片背景色 */
+    -webkit-box-shadow: 0 0 0px 1000px var(--card-bg-color) inset !important;
+    
+    /* 3. 一个小技巧，通过超长过渡动画“欺骗”浏览器，防止它自己改回来 */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* 3. 密码框 "眼睛" 图标颜色 */
+.ant-input-password-icon {
+    color: var(--text-secondary-color) !important;
+}
+
+/* --- 【【核心修复区】】: 强制布局组件使用主题颜色 --- */
+.ant-layout { background: var(--bg-color) !important; }
+.grading-header.ant-layout-header { background: var(--header-bg-color) !important; border-bottom: 1px solid var(--border-color); }
+.ant-layout-content { background: var(--bg-color) !important; }
+.ant-layout-footer { background: var(--footer-bg-color) !important; color: var(--footer-text-color) !important; }
+.grading-header .header-title { color: var(--header-title-color) !important; }
+.grading-header .header-button { color: var(--header-button-color) !important; }
+.ant-form-item-label > label { color: var(--text-color) !important; }
+
+/* 【新增修复】: 默认按钮在暗色/护眼模式下的禁用样式 */
+.dark-mode .ant-btn-default[disabled],
+.dark-mode .ant-btn-default[disabled]:hover {
+    color: rgba(255, 255, 255, 0.3) !important;
+    background-color: transparent !important;
+    border-color: #424242 !important;
+}
+.eyecare-mode .ant-btn-default[disabled],
+.eyecare-mode .ant-btn-default[disabled]:hover {
+    color: rgba(93, 64, 55, 0.4) !important;
+    background-color: transparent !important;
+    border-color: #d7ccc8 !important;
+}
+
+/* 【【核心修复】】 */
+/* --- Header --- */
+.grading-header { 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--header-bg-color) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+.header-title { 
+    color: var(--header-title-color) !important; 
+    margin: 0 !important; 
+    line-height: 64px !important; 
+    font-size: 20px !important; 
+}
+.header-right-controls { display: flex; align-items: center; gap: 24px; }
+.user-controls { display: flex; align-items: center; gap: 16px; }
+
+/* 欢迎语的样式 */
+.header-welcome-text {
+    color: var(--header-welcome-text-color) !important;
+    font-size: 14px;
+}
+
+/* 默认按钮 (非主色) */
+.ant-btn-default {
+    background-color: var(--card-bg-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+.ant-btn-default:not(:disabled):hover {
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+
+/* 1. Modal 对话框样式 */
+.ant-modal-content {
+    background: var(--modal-bg-color) !important;
+    color: var(--text-color) !important;
+}
+.ant-modal-header {
+    background: var(--modal-bg-color) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+.ant-modal-title {
+    color: var(--text-color) !important;
+}
+.ant-modal-close {
+    color: var(--text-secondary-color) !important;
+}
+.ant-modal-footer .ant-btn-default {
+    background: transparent !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* 2. Modal内部的Tabs标签页样式 */
+.ant-modal-body .ant-tabs-nav {
+    margin-bottom: 24px !important;
+}
+.ant-modal-body .ant-tabs-tab {
+    color: var(--text-secondary-color) !important;
+}
+.ant-modal-body .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--primary-color) !important;
+}
+.ant-modal-body .ant-tabs-ink-bar {
+    background: var(--primary-color) !important;
+}
+
+/* 3. Modal内部的表单样式 */
+.ant-modal-body .ant-form-item-label > label {
+    color: var(--text-color) !important;
+}
+.ant-modal-body .ant-form-item-extra {
+    color: var(--text-secondary-color) !important;
+}
+.ant-modal-body .ant-input-password,
+.ant-modal-body .ant-input {
+    background: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+.ant-modal-body .ant-upload.ant-upload-select-picture-card {
+    background-color: var(--bg-color) !important;
+    border-color: var(--border-color) !important;
+}
+.ant-modal-body .ant-upload-select .ant-upload {
+    color: var(--text-secondary-color) !important;
+}
+
+/* --- 步骤条样式 --- */
+.ant-steps {
+    background: var(--card-bg-color);
+    padding: 16px 24px;
+    border-radius: 8px;
+}
+.dark-mode .ant-steps, .eyecare-mode .ant-steps {
+    border: 1px solid var(--border-color);
+}
+
+/* 使用更具体的选择器来确保样式被应用 */
+.homework-grading-page > .ant-layout-header {
+  background: var(--header-bg-color) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.homework-grading-page > .ant-layout-content {
+  background: var(--bg-color) !important;
+}
+
+.homework-grading-page .ant-steps {
+    background: var(--card-bg-color) !important;
+    padding: 16px 24px;
+    border-radius: 8px;
+    border: 1px solid transparent; /* 默认无边框 */
+}
+
+/* 只在暗色和护眼模式下为步骤条添加边框 */
+.dark-mode .ant-steps,
+.eyecare-mode .ant-steps {
+    border-color: var(--border-color) !important;
+}
+
+/* 【新增修复】: 评语区文本颜色 */
+.feedback-section .ant-typography,
+.feedback-section ul li {
+    color: var(--text-color) !important;
+}
+
+/* 【新增修复】: 更具体地定位结果区域的标题 */
+.grading-result-display .ant-typography {
+    color: var(--text-color);
+}
+
+/* 【新增修复】: 内嵌卡片和提示框样式 */
+.ant-card { background: var(--card-bg-color) !important; border-color: var(--border-color) !important; }
+.ant-card-head { background: transparent !important; color: var(--text-color) !important; border-color: var(--border-color) !important; }
+.ant-card-type-inner { background: var(--inner-card-bg-color) !important; }
+.ant-card-type-inner .ant-card-head { background: var(--inner-card-bg-color) !important; }
+.ant-card-type-inner .ant-typography {
+    color: var(--text-color) !important;
+}
+.ant-alert-success {
+    background-color: var(--alert-success-bg) !important;
+    border-color: var(--alert-success-border) !important;
+}
+.ant-alert-success .ant-alert-message {
+    color: var(--text-color) !important;
+}
+.ant-alert-success .ant-alert-icon {
+    color: var(--icon-success-color) !important;
+}
+
+/* --- Header --- */
+.grading-header { 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--header-bg-color) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+.header-title { 
+    color: var(--header-title-color) !important; 
+    margin: 0 !important; 
+    line-height: 64px !important; 
+    font-size: 20px !important; 
+}
+.header-right-controls { display: flex; align-items: center; gap: 24px; }
+.user-controls { display: flex; align-items: center; gap: 16px; }
+/* 【【核心修复】】: 统一Header中的所有按钮样式 */
+.header-button,
+.grading-header .ant-btn-default {
+    color: var(--header-button-color) !important;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+.grading-header .ant-radio-group {
+    background-color: var(--header-control-area-bg);
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.grading-header .ant-radio-button-wrapper {
+    background: transparent !important;
+    border: none !important; /* 统一去除边框 */
+    box-shadow: none !important;
+    color: var(--text-secondary-color) !important;
+}
+
+.grading-header .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background: var(--primary-color) !important;
+    color: white !important; /* 强制白色文字，确保所有主题下都清晰 */
+    border-radius: 4px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: none !important; /* 【修复】: 明确去除边框 */
+}
+.dark-mode .grading-header .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.header-button,
+.grading-header .ant-btn-default {
+    color: var(--header-button-color) !important;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+.header-button:hover,
+.grading-header .ant-btn-default:not([disabled]):hover {
+    background: var(--header-button-hover-bg) !important;
+    /* 悬浮时文字颜色使用主题色，提供反馈 */
+    color: var(--primary-color) !important;
+}
+.dark-mode .header-button:hover,
+.dark-mode .grading-header .ant-btn-default:not([disabled]):hover {
+    color: white !important;
+}
+
+/* --- Main Content --- */
+.main-content { padding: 24px; }
+@media (min-width: 768px) { .main-content { padding: 40px 50px; } }
+
+/* --- Icons --- */
+.icon-success { color: var(--icon-success-color); }
+.icon-error { color: var(--icon-error-color); }
+
+/* --- 旧版样式集成 (Legacy Style Integration) --- */
+.chat-container { padding: 16px; height: calc(100vh - 160px); overflow-y: auto; }
+.chat-message { display: flex; margin-bottom: 12px; }
+.chat-message.user { justify-content: flex-end; }
+.chat-message.bot { justify-content: flex-start; }
+.bubble { max-width: 70%; padding: 12px 16px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; word-break: break-word; }
+.chat-message.user .bubble { background: var(--bubble-user-color); color: #fff; border-bottom-right-radius: 4px; }
+.chat-message.bot .bubble { background: var(--bubble-bot-color); color: var(--text-color); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; }
+.input-footer { display: flex; align-items: center; padding: 8px 16px; background: var(--card-bg-color); border-top: 1px solid var(--border-color); }
+.sidebar { background: var(--sidebar-bg-color) !important; border-right: 1px solid var(--border-color); }
+.sidebar .ant-menu { background: transparent !important; }
+.sidebar .ant-menu-item-selected { background: var(--primary-color) !important; color: white !important; }
+.eyecare-mode .sidebar .ant-menu-item-selected { color: var(--card-bg-color) !important; }
+.sidebar .ant-menu-item:hover, .sidebar .ant-menu-item-active { color: var(--text-color) !important; }
+
+/* ==========================================================================
+   Ant Design 组件细节覆盖 (Ant Design Detail Overrides)
+   ========================================================================== */
+.ant-form-item-label > label { color: var(--text-color) !important; }
+.ant-btn-primary { color: #fff !important; background-color: var(--primary-color) !important; border-color: var(--primary-color) !important; }
+.eyecare-mode .ant-btn-primary { color: #fff !important; }
+.ant-btn-primary[disabled] { color: rgba(0, 0, 0, 0.25) !important; background: #f5f5f5 !important; border-color: #d9d9d9 !important; }
+.dark-mode .ant-btn-primary[disabled] { color: hsla(0,0%,100%,.3) !important; background: #2e2e2e !important; border-color: #535353 !important; }
+.eyecare-mode .ant-btn-primary[disabled] { color: rgba(0, 0, 0, 0.25) !important; background: #e0e0e0 !important; border-color: #c0c0c0 !important;}
+.ant-card { background: var(--card-bg-color) !important; border-color: var(--border-color) !important; }
+.ant-card-head { background: transparent !important; color: var(--text-color) !important; border-color: var(--border-color) !important; }
+.ant-typography-secondary, .ant-empty-description, .ant-upload-list-item-name { color: var(--text-secondary-color) !important; }
+.ant-input, .ant-select-selector, .ant-input-affix-wrapper { background: var(--card-bg-color) !important; color: var(--text-color) !important; border-color: var(--border-color) !important; }
+.ant-input::placeholder, textarea::placeholder { color: var(--text-secondary-color) !important; opacity: 1; }
+.ant-steps-item-title, .ant-steps-item-description { color: var(--text-color) !important; }
+.ant-steps-item-wait .ant-steps-item-icon .ant-steps-icon,
+.ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title,
+.ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description { color: var(--text-secondary-color) !important; }
+.dark-mode .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after,
+.eyecare-mode .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after { background-color: var(--primary-color); }
+.ant-radio-button-wrapper { background: var(--card-bg-color) !important; color: var(--text-color) !important; border-color: var(--border-color) !important; }
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) { background: var(--primary-color) !important; color: white !important; border-color: var(--primary-color) !important; }
+.eyecare-mode .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) { color: #fff !important; }
+.ant-radio-button-wrapper:not(.ant-radio-button-wrapper-disabled):hover { color: var(--primary-color) !important; }
+.ant-divider-horizontal.ant-divider-with-text { border-top-color: var(--border-color) !important; color: var(--text-color); }
