@@ -24,7 +24,8 @@ cd AI-Grading-System
 chmod +x start.sh && ./start.sh
 
 # 3. 访问应用
-# 前端: http://localhost:5173
+# 前端: http://<your-ip>:5173
+# 或在本机访问: http://localhost:5173
 ```
 
 > **注意**: 首次运行前请确保已安装 [Node.js 18+](https://nodejs.org/) 和 [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki)（用于图片文字识别）
@@ -313,11 +314,11 @@ npm run dev
 
 服务启动后，您可以通过以下地址访问：
 
-- **前端界面**: http://localhost:5173
-- **后端 grading 服务**: http://localhost:3000
-- **后端 conversion 服务**: http://localhost:5001
+- **前端界面**: http://localhost:5173 (本机访问) 或 http://<server-ip>:5173 (公网访问)
+- **后端 grading 服务**: http://localhost:3000 (本机访问) 或 http://<server-ip>:3000 (公网访问)
+- **后端 conversion 服务**: http://localhost:5001 (本机访问) 或 http://<server-ip>:5001 (公网访问)
 
-在浏览器中打开前端地址，即可看到项目界面并开始使用。
+在浏览器中打开前端地址，即可看到项目界面并开始使用。系统会自动检测并适配不同的访问方式。
 
 
 

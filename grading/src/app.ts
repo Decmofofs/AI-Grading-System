@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import { AppDataSource } from './config/database';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
@@ -14,6 +15,7 @@ import gradingRoutes from './routes/gradingRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import { avatarAuthMiddleware } from './middleware/avatarAuth';
 import { logger } from './utils/logger';
+import { getAllowedOrigins } from './utils/dynamicUrl';
 
 // Load environment variables
 dotenv.config();
@@ -27,7 +29,7 @@ app.use(helmet({
 	contentSecurityPolicy: {
 		directives: {
 			defaultSrc: ["'self'"],
-			imgSrc: ["'self'", "data:", "http://localhost:3000", "http://localhost:5173"],
+			imgSrc: ["'self'", "data:", ...getAllowedOrigins()],
 			styleSrc: ["'self'", "'unsafe-inline'"],
 			scriptSrc: ["'self'"],
 		},
@@ -46,24 +48,46 @@ app.use('/api/', limiter);
 // CORS configuration - allow external access
 app.use(cors({
 	origin: function(origin, callback) {
-		// In development, allow all origins
-		// In production, you should specify your domain(s)
-		if (process.env.NODE_ENV === 'production') {
-			// For production, add your actual domain(s) here
-			const allowedOrigins = [
-				'http://localhost:5173',
-				'http://localhost:3000',
-				// Add your production domain here
-				// 'https://yourdomain.com'
-			];
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true);
-			} else {
-				callback(new Error('Not allowed by CORS'));
-			}
-		} else {
-			// Development: allow all origins
+		if (process.env.NODE_ENV !== 'production') {
 			callback(null, true);
+			return;
+		}
+		if (!origin) {
+			callback(null, true);
+			return;
+		}
+		try {
+			const url = new URL(origin);
+			const hostname = url.hostname;
+			if (
+				hostname === 'localhost' ||
+				hostname === '127.0.0.1' ||
+				hostname.startsWith('10.') ||
+				hostname.startsWith('192.168.') ||
+				hostname.startsWith('172.')
+			) {
+				callback(null, true);
+				return;
+			}
+			// 允许服务器自身的所有IP
+			const interfaces = os.networkInterfaces();
+			const localIPs = Object.values(interfaces).flat().map(i => i && i.address).filter(Boolean);
+			if (localIPs.includes(hostname)) {
+				callback(null, true);
+				return;
+			}
+			// 允许自定义生产域名
+			const allowedDomains: string[] = [
+				// 'yourdomain.com',
+				// 'www.yourdomain.com'
+			];
+			if (allowedDomains.includes(hostname)) {
+				callback(null, true);
+				return;
+			}
+			callback(new Error('Not allowed by CORS'));
+		} catch (e) {
+			callback(new Error('Not allowed by CORS'));
 		}
 	},
 	credentials: true,

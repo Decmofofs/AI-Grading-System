@@ -76,7 +76,7 @@ create_env_files() {
         echo -e "${CYAN}[CREATE] Creating grading/.env file...${NC}"
         cat > "grading/.env" << 'EOF'
 # Environment Configuration
-NODE_ENV=development
+NODE_ENV=production
 PORT=3000
 
 # JWT Configuration
@@ -108,7 +108,7 @@ EOF
         echo -e "${CYAN}[CREATE] Creating conversion/.env file...${NC}"
         cat > "conversion/.env" << 'EOF'
 # Environment Configuration
-NODE_ENV=development
+NODE_ENV=production
 PORT=5001
 
 # API Keys (Users will provide these through frontend)

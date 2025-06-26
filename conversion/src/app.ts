@@ -6,9 +6,11 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import conversionRoutes from './routes/conversionRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import { logger } from './utils/logger';
+import { getAllowedOrigins } from './utils/dynamicUrl';
 
 // Load environment variables
 dotenv.config();
@@ -34,13 +36,11 @@ app.use(cors({
 		// In development, allow all origins
 		// In production, you should specify your domain(s)
 		if (process.env.NODE_ENV === 'production') {
-			// For production, add your actual domain(s) here
-			const allowedOrigins = [
-				'http://localhost:5173',
-				'http://localhost:3000',
-				// Add your production domain here
-				// 'https://yourdomain.com'
-			];
+			// For production, use dynamic allowed origins
+			const allowedOrigins = getAllowedOrigins();
+			// Add your production domain here if needed
+			// allowedOrigins.push('https://yourdomain.com');
+			
 			if (!origin || allowedOrigins.includes(origin)) {
 				callback(null, true);
 			} else {

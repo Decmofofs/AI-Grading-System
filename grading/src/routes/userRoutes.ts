@@ -8,6 +8,7 @@ import { User } from '../entities/User';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { asyncHandler, createError } from '../middleware/errorHandler';
 import { logger } from '../utils/logger';
+import { getServerBaseUrl } from '../utils/dynamicUrl';
 
 const router = express.Router();
 
@@ -50,8 +51,10 @@ router.get('/profile',
 	authenticateToken,
 	asyncHandler(async (req: AuthenticatedRequest, res: express.Response) => {
 		const user = req.user!;
+		
+		// 使用工具函数动态生成头像URL
 		const avatar_full_url = user.avatar_url 
-			? `http://localhost:3000/${user.avatar_url}` 
+			? `${getServerBaseUrl(req)}/${user.avatar_url}` 
 			: null;
 
 		res.json({
@@ -127,7 +130,8 @@ router.post('/avatar/upload',
 		user.avatar_url = `static/avatars/${file.filename}`;
 		await userRepository.save(user);
 
-		const avatar_full_url = `http://localhost:3000/${user.avatar_url}`;
+		// 使用工具函数动态生成头像URL
+		const avatar_full_url = `${getServerBaseUrl(req)}/${user.avatar_url}`;
 
 		logger.info(`Avatar uploaded for user: ${user.username}`);
 
