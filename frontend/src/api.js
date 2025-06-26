@@ -1,14 +1,33 @@
-// frontend/src/api.js (×îÖÕÕýÈ·°æ)
+// frontend/src/api.js
 
-const GRADING_SERVICE_URL = 'http://localhost:3000';      // AI¶þ (×÷ÒµÅú¸Ä·þÎñ)
-const CONVERSION_SERVICE_URL = 'http://localhost:5001';   // AIÒ» (¶àÄ£Ì¬×ªÎÄ×Ö·þÎñ)
+// åŠ¨æ€ç¡®å®šAPIåœ°å€ - å§‹ç»ˆåŸºäºŽå½“å‰è®¿é—®çš„ä¸»æœºå
+const getApiBaseUrl = () => {
+    const baseUrl = `http://${window.location.hostname}:3000`;
+    console.log(`API Base: ${baseUrl}`);
+    return baseUrl;
+};
+
+const getConversionApiUrl = () => {
+    const conversionUrl = `http://${window.location.hostname}:5001`;
+    console.log(`Conversion API: ${conversionUrl}`);
+    return conversionUrl;
+};
+
+const GRADING_SERVICE_URL = getApiBaseUrl();      // AIæ‰¹æ”¹æœåŠ¡
+const CONVERSION_SERVICE_URL = getConversionApiUrl();   // AIå¤šæ¨¡æ€è½¬æ¢æœåŠ¡
+
+console.log('APIé…ç½®:', {
+    GRADING_SERVICE_URL,
+    CONVERSION_SERVICE_URL,
+    hostname: window.location.hostname
+});
 
 /**
- * ¡¾¡¾**ÕâÀïÊÇ²¹È«µÄº¯Êý**¡¿¡¿
- * »ñÈ¡¿ÉÓÃµÄAIÄ£ÐÍÁÐ±í
+ * ï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½Ç²ï¿½È«ï¿½Äºï¿½ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½
+ * ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ãµï¿½AIÄ£ï¿½ï¿½ï¿½Ð±ï¿½
  */
 export async function fetchModels(token) {
-    console.log("ÕýÔÚÏòAI¶þ£¨Åú¸Ä·þÎñ£©ÇëÇóÄ£ÐÍÁÐ±í...");
+    console.log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½AIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ð±ï¿½...");
     const headers = {};
     if (token && token.trim()) {
         headers['Authorization'] = `Bearer ${token.trim()}`;
@@ -18,35 +37,35 @@ export async function fetchModels(token) {
         const res = await fetch(`${GRADING_SERVICE_URL}/api/models`, { headers });
 
         if (!res.ok) {
-            // Èç¹ûÍøÂç²ãÃæÇëÇóÊ§°Ü (ÀýÈç 404, 500´íÎó)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ 404, 500ï¿½ï¿½ï¿½ï¿½)
             const errorData = await res.json().catch(() => ({ message: res.statusText }));
-            throw new Error(errorData.message || `»ñÈ¡Ä£ÐÍÁÐ±íÊ§°Ü (×´Ì¬ ${res.status})`);
+            throw new Error(errorData.message || `ï¿½ï¿½È¡Ä£ï¿½ï¿½ï¿½Ð±ï¿½Ê§ï¿½ï¿½ (×´Ì¬ ${res.status})`);
         }
 
         const data = await res.json();
 
-        // ¼ì²éÒµÎñÂß¼­ÊÇ·ñ³É¹¦
+        // ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ß¼ï¿½ï¿½Ç·ï¿½É¹ï¿½
         if (!data.success) {
-            throw new Error(data.error || 'ºó¶Ë·µ»Ø»ñÈ¡Ä£ÐÍÁÐ±íÊ§°Ü');
+            throw new Error(data.error || 'ï¿½ï¿½Ë·ï¿½ï¿½Ø»ï¿½È¡Ä£ï¿½ï¿½ï¿½Ð±ï¿½Ê§ï¿½ï¿½');
         }
 
-        return data; // ³É¹¦Ê±£¬·µ»Ø { success: true, models: [...] }
+        return data; // ï¿½É¹ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ { success: true, models: [...] }
 
     } catch (error) {
-        console.error("»ñÈ¡Ä£ÐÍÁÐ±íAPIµ÷ÓÃ´íÎó:", error);
-        // ½«´íÎóÏòÉÏÅ×³ö£¬ÈÃµ÷ÓÃËüµÄ×é¼þ£¨HomeworkGrading.jsx£©ÄÜ²¶×½µ½
+        console.error("ï¿½ï¿½È¡Ä£ï¿½ï¿½ï¿½Ð±ï¿½APIï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½:", error);
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×³ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½HomeworkGrading.jsxï¿½ï¿½ï¿½Ü²ï¿½×½ï¿½ï¿½
         throw error;
     }
 }
 
 /**
- * µ÷ÓÃ AIÒ»: ½«¶àÄ£Ì¬ÎÄ¼þ×ª»»ÎªÎÄ×Ö
+ * ï¿½ï¿½ï¿½ï¿½ AIÒ»: ï¿½ï¿½ï¿½ï¿½Ä£Ì¬ï¿½Ä¼ï¿½×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
  */
 export async function convertMultimodalToText(file, token, apiKey) {
-    console.log("ÕýÔÚµ÷ÓÃAIÒ»£¨×ª»»·þÎñ£©:", file.name);
+    console.log("ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½AIÒ»ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:", file.name);
     const formData = new FormData();
     formData.append('file', file);
-    // ¡¾ÐÞ¸Ä¡¿: ½«apiKeyÌí¼Óµ½±íµ¥Êý¾ÝÖÐ
+    // ï¿½ï¿½ï¿½Þ¸Ä¡ï¿½: ï¿½ï¿½apiKeyï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     formData.append('apiKey', apiKey); 
 
     const apiUrl = `${CONVERSION_SERVICE_URL}/api/convert-to-text`; 
@@ -64,20 +83,20 @@ export async function convertMultimodalToText(file, token, apiKey) {
         const result = await res.json();
 
         if (!res.ok || !result.success) {
-            throw new Error(result.error || `ÎÄ¼þ×ª»»Ê§°Ü (×´Ì¬ ${res.status})`);
+            throw new Error(result.error || `ï¿½Ä¼ï¿½×ªï¿½ï¿½Ê§ï¿½ï¿½ (×´Ì¬ ${res.status})`);
         }
         return result;
     } catch (error) {
-        console.error("ÎÄ¼þ×ª»»APIµ÷ÓÃ´íÎó:", error);
+        console.error("ï¿½Ä¼ï¿½×ªï¿½ï¿½APIï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½:", error);
         return { success: false, error: error.message };
     }
 }
 
 /**
- * µ÷ÓÃ AI¶þ: Ìá½»ÎÄ±¾½øÐÐ´¦Àí (±ê×¼´ð°¸»òÑ§Éú×÷Òµ)
+ * ï¿½ï¿½ï¿½ï¿½ AIï¿½ï¿½: ï¿½á½»ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ (ï¿½ï¿½×¼ï¿½ð°¸»ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½Òµ)
  */
 export async function processHomeworkSubmission(textForProcessing, modelId, submissionType, token, apiKey) {
-    console.log("ÕýÔÚµ÷ÓÃAI¶þ£¨Åú¸Ä·þÎñ£©:", { submissionType });
+    console.log("ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½AIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½:", { submissionType });
     const headers = { 'Content-Type': 'application/json' };
     if (token) {
         headers['Authorization'] = `Bearer ${token.trim()}`;
@@ -103,11 +122,11 @@ export async function processHomeworkSubmission(textForProcessing, modelId, subm
         const result = await res.json();
 
         if (!res.ok || !result.success) {
-            throw new Error(result.error || `´¦ÀíÇëÇóÊ§°Ü (×´Ì¬ ${res.status})`);
+            throw new Error(result.error || `ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ (×´Ì¬ ${res.status})`);
         }
         return result;
     } catch (error) {
-        console.error("×÷Òµ´¦ÀíAPIµ÷ÓÃ´íÎó:", error);
+        console.error("ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½:", error);
         return { success: false, error: error.message };
     }
 }

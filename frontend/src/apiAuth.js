@@ -1,7 +1,11 @@
 // frontend/src/apiAuth.js
 
-// 定义认证服务的地址（现在它和批改服务是同一个）
-const AUTH_SERVICE_URL = 'http://localhost:3000';
+// 动态确定认证服务的地址 - 始终基于当前访问的主机名
+const getAuthServiceUrl = () => {
+    return `http://${window.location.hostname}:3000`;
+};
+
+const AUTH_SERVICE_URL = getAuthServiceUrl();
 
 /**
  * 注册新用户
