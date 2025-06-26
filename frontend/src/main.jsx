@@ -1,44 +1,44 @@
 // src/main.jsx
 
-// Ant Design ¼æÈİÓëÑùÊ½
+// Ant Design å…¼å®¹ä¸æ ·å¼
 import '@ant-design/v5-patch-for-react-19';
 import 'antd/dist/reset.css';
-// µ¼ÈëÎÒÃÇ°üº¬Ö÷Ìâ±äÁ¿µÄÈ«¾ÖCSSÎÄ¼ş
+// å¯¼å…¥æˆ‘ä»¬åŒ…å«ä¸»é¢˜å˜é‡çš„å…¨å±€CSSæ–‡ä»¶
 import './index.css'; 
 
-// React ÓëÂ·ÓÉºËĞÄ
+// React ä¸è·¯ç”±æ ¸å¿ƒ
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// µ¼ÈëÈ«¾ÖÖ÷ÌâÌá¹©Õß
+// å¯¼å…¥å…¨å±€ä¸»é¢˜æä¾›è€…
 import { ThemeProvider } from './context/ThemeContext';
 
-// µ¼ÈëÒ³Ãæ×é¼ş
+// å¯¼å…¥é¡µé¢ç»„ä»¶
 import Home from './pages/home';
 import Login from './pages/login';
 import Register from './pages/register';
 import HomeworkGrading from './pages/HomeworkGrading';
-import ProtectedRoute from './components/ProtectedRoute'; // ¼ÙÉè´Ë±£»¤Â·ÓÉ×é¼ş´æÔÚ
+import ProtectedRoute from './components/ProtectedRoute'; // å‡è®¾æ­¤ä¿æŠ¤è·¯ç”±ç»„ä»¶å­˜åœ¨
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 
-// äÖÈ¾Õû¸öÓ¦ÓÃ
+// æ¸²æŸ“æ•´ä¸ªåº”ç”¨
 root.render(
   <React.StrictMode>
-    {/* Ê¹ÓÃ ThemeProvider °ü¹üÕû¸öÓ¦ÓÃ£¬Ê¹ÆäËùÓĞ×Ó×é¼ş¶¼ÄÜ·ÃÎÊÖ÷Ìâ×´Ì¬ */}
+    {/* ä½¿ç”¨ ThemeProvider åŒ…è£¹æ•´ä¸ªåº”ç”¨ï¼Œä½¿å…¶æ‰€æœ‰å­ç»„ä»¶éƒ½èƒ½è®¿é—®ä¸»é¢˜çŠ¶æ€ */}
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          {/* Ê×Ò³£¬Í¨³£ÓÃÓÚÎ´µÇÂ¼ÓÃ»§ */}
+          {/* é¦–é¡µï¼Œé€šå¸¸ç”¨äºæœªç™»å½•ç”¨æˆ· */}
           <Route path="/" element={<Home />} />
 
-          {/* ×¢²áÓëµÇÂ¼ */}
+          {/* æ³¨å†Œä¸ç™»å½• */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* ×÷ÒµÅú¸ÄÒ³£¬×÷ÎªÖ÷ÒªµÄÊÜ±£»¤Â·ÓÉ */}
+          {/* ä½œä¸šæ‰¹æ”¹é¡µï¼Œä½œä¸ºä¸»è¦çš„å—ä¿æŠ¤è·¯ç”± */}
           <Route
             path="/grade-homework"
             element={
@@ -48,7 +48,7 @@ root.render(
             }
           />
 
-          {/* ÆäËûËùÓĞÎ´Æ¥ÅäÂ·¾¶ÖØ¶¨Ïòµ½ºÏÊÊµÄÎ»ÖÃ */}
+          {/* å…¶ä»–æ‰€æœ‰æœªåŒ¹é…è·¯å¾„é‡å®šå‘åˆ°åˆé€‚çš„ä½ç½® */}
           <Route 
             path="*" 
             element={<Navigate to={localStorage.getItem('token') ? "/grade-homework" : "/"} replace />} 
