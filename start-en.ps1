@@ -48,6 +48,75 @@ function Initialize-Directories {
     }
 }
 
+# Create .env files if they don't exist
+function Initialize-EnvFiles {
+    Write-Host "[CHECK] Checking .env files..." -ForegroundColor Yellow
+    
+    # Create grading/.env if it doesn't exist
+    if (!(Test-Path "grading\.env")) {
+        Write-Host "[CREATE] Creating grading\.env file..." -ForegroundColor Cyan
+        $gradingEnvContent = @"
+# Environment Configuration
+NODE_ENV=development
+PORT=3000
+
+# JWT Configuration
+JWT_SECRET_KEY=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
+
+# Database Configuration
+DB_TYPE=sqlite
+DB_DATABASE=database.db
+
+# API Keys (Users will provide these through frontend)
+QWEN_API_KEY=
+SILICONFLOW_API_KEY=
+
+# Upload settings
+MAX_FILE_SIZE=10MB
+UPLOAD_FOLDER=static/avatars
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=combined.log
+"@
+        $gradingEnvContent | Out-File -FilePath "grading\.env" -Encoding UTF8
+        Write-Host "[SUCCESS] grading\.env created" -ForegroundColor Green
+    } else {
+        Write-Host "[OK] grading\.env already exists" -ForegroundColor Green
+    }
+    
+    # Create conversion/.env if it doesn't exist
+    if (!(Test-Path "conversion\.env")) {
+        Write-Host "[CREATE] Creating conversion\.env file..." -ForegroundColor Cyan
+        $conversionEnvContent = @"
+# Environment Configuration
+NODE_ENV=development
+PORT=5001
+
+# API Keys (Users will provide these through frontend)
+QWEN_API_KEY=
+SILICONFLOW_API_KEY=
+
+# Upload settings
+MAX_FILE_SIZE=50MB
+UPLOAD_FOLDER=uploads
+
+# OCR Settings
+TESSERACT_PATH=
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=conversion.log
+"@
+        $conversionEnvContent | Out-File -FilePath "conversion\.env" -Encoding UTF8
+        Write-Host "[SUCCESS] conversion\.env created" -ForegroundColor Green
+    } else {
+        Write-Host "[OK] conversion\.env already exists" -ForegroundColor Green
+    }
+    
+    Write-Host ""
+}
+
 # Start a single service
 function Start-Service {
     param(
@@ -149,6 +218,9 @@ try {
     
     # Initialize directories
     Initialize-Directories
+    
+    # Create .env files if they don't exist
+    Initialize-EnvFiles
     
     Write-Host "[PREPARE] Preparing to start services..." -ForegroundColor Yellow
     Write-Host ""

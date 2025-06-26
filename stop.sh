@@ -54,6 +54,13 @@ stop_by_pid() {
     # Remove PID file
     rm -f "$PID_FILE"
     echo -e "${GREEN}[CLEANUP] PID file removed${NC}"
+    
+    # Clean up launcher scripts
+    if ls logs/*-launcher.sh 1> /dev/null 2>&1; then
+        rm -f logs/*-launcher.sh
+        echo -e "${GREEN}[CLEANUP] Launcher scripts removed${NC}"
+    fi
+    
     return 0
 }
 

@@ -67,6 +67,73 @@ initialize_directories() {
     fi
 }
 
+# Function to create env files if they don't exist
+create_env_files() {
+    echo -e "${YELLOW}[CHECK] Checking .env files...${NC}"
+    
+    # Create grading/.env if it doesn't exist
+    if [ ! -f "grading/.env" ]; then
+        echo -e "${CYAN}[CREATE] Creating grading/.env file...${NC}"
+        cat > "grading/.env" << 'EOF'
+# Environment Configuration
+NODE_ENV=development
+PORT=3000
+
+# JWT Configuration
+JWT_SECRET_KEY=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
+
+# Database Configuration
+DB_TYPE=sqlite
+DB_DATABASE=database.db
+
+# API Keys (Users will provide these through frontend)
+QWEN_API_KEY=
+SILICONFLOW_API_KEY=
+
+# Upload settings
+MAX_FILE_SIZE=10MB
+UPLOAD_FOLDER=static/avatars
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=combined.log
+EOF
+        echo -e "${GREEN}[SUCCESS] grading/.env created${NC}"
+    else
+        echo -e "${GREEN}[OK] grading/.env already exists${NC}"
+    fi
+    
+    # Create conversion/.env if it doesn't exist
+    if [ ! -f "conversion/.env" ]; then
+        echo -e "${CYAN}[CREATE] Creating conversion/.env file...${NC}"
+        cat > "conversion/.env" << 'EOF'
+# Environment Configuration
+NODE_ENV=development
+PORT=5001
+
+# API Keys (Users will provide these through frontend)
+QWEN_API_KEY=
+SILICONFLOW_API_KEY=
+
+# Upload settings
+MAX_FILE_SIZE=50MB
+UPLOAD_FOLDER=uploads
+
+# OCR Settings
+TESSERACT_PATH=
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=conversion.log
+EOF
+        echo -e "${GREEN}[SUCCESS] conversion/.env created${NC}"
+    else
+        echo -e "${GREEN}[OK] conversion/.env already exists${NC}"
+    fi
+    
+    echo ""
+}
+
 # Function to check if port is in use
 check_port() {
     local port=$1
@@ -125,10 +192,28 @@ start_service() {
         fi
     fi
     
-    # Start service in background
+    # Start service in background with proper daemon-like behavior
     echo -e "${CYAN}[LAUNCH] Starting $service_name...${NC}"
-    nohup npm run dev > "../logs/${service_name,,}.log" 2>&1 &
-    local pid=$!
+    
+    # Create a launcher script for each service to ensure complete detachment
+    local launcher_script="../logs/${service_name,,}-launcher.sh"
+    cat > "$launcher_script" << EOF
+#!/bin/bash
+cd "$PWD"
+exec npm run dev >> "../logs/${service_name,,}.log" 2>&1
+EOF
+    chmod +x "$launcher_script"
+    
+    # Start the service using setsid for complete session detachment
+    if command -v setsid &> /dev/null; then
+        setsid bash -c "$launcher_script" < /dev/null &> /dev/null &
+        local pid=$!
+    else
+        # Fallback for systems without setsid
+        nohup bash -c "$launcher_script" < /dev/null &> /dev/null &
+        local pid=$!
+        disown $pid
+    fi
     
     # Save PID for later cleanup
     echo "$service_name:$pid" >> "../$PID_FILE"
@@ -136,7 +221,7 @@ start_service() {
     echo -e "${GREEN}[SUCCESS] $service_name started (PID: $pid)${NC}"
     
     cd ..
-    sleep 2
+    sleep 3
 }
 
 # Function to check service health
@@ -161,13 +246,29 @@ check_service_health() {
     fi
 }
 
+# Function to get server IP address
+get_server_ip() {
+    # Try to get the external IP address
+    if command -v curl &> /dev/null; then
+        EXTERNAL_IP=$(curl -s --max-time 5 ifconfig.me 2>/dev/null || curl -s --max-time 5 ipinfo.io/ip 2>/dev/null)
+    fi
+    
+    # Get local network IP
+    if command -v ip &> /dev/null; then
+        LOCAL_IP=$(ip route get 8.8.8.8 2>/dev/null | grep -oP 'src \K\S+' | head -1)
+    elif command -v ifconfig &> /dev/null; then
+        LOCAL_IP=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | head -1)
+    fi
+    
+    echo "$LOCAL_IP|$EXTERNAL_IP"
+}
+
 # Function to cleanup on exit
 cleanup_on_exit() {
     echo ""
-    echo -e "${YELLOW}[CLEANUP] Cleaning up...${NC}"
-    if [ -f "$PID_FILE" ]; then
-        rm -f "$PID_FILE"
-    fi
+    echo -e "${YELLOW}[CLEANUP] Cleaning up launcher scripts...${NC}"
+    rm -f logs/*-launcher.sh
+    echo -e "${GREEN}[CLEANUP] Cleanup complete${NC}"
     exit 0
 }
 
@@ -186,6 +287,9 @@ main() {
     
     # Initialize directories
     initialize_directories
+    
+    # Create .env files if they don't exist
+    create_env_files
     
     echo -e "${YELLOW}[PREPARE] Preparing to start services...${NC}"
     echo ""
@@ -210,10 +314,34 @@ main() {
     echo ""
     echo -e "${GREEN}[COMPLETE] All services started!${NC}"
     echo ""
+    
+    # Get server IP addresses
+    IPS=$(get_server_ip)
+    LOCAL_IP=$(echo "$IPS" | cut -d'|' -f1)
+    EXTERNAL_IP=$(echo "$IPS" | cut -d'|' -f2)
+    
     echo -e "${CYAN}[ADDRESSES] Service URLs:${NC}"
-    echo -e "${WHITE}   Grading Service:    http://localhost:3000${NC}"
-    echo -e "${WHITE}   Conversion Service: http://localhost:5001${NC}"
-    echo -e "${WHITE}   Frontend:           http://localhost:5173${NC}"
+    echo -e "${WHITE}   Local Access:${NC}"
+    echo -e "${WHITE}     Grading Service:    http://localhost:3000${NC}"
+    echo -e "${WHITE}     Conversion Service: http://localhost:5001${NC}"
+    echo -e "${WHITE}     Frontend:           http://localhost:5173${NC}"
+    echo ""
+    
+    if [ -n "$LOCAL_IP" ]; then
+        echo -e "${WHITE}   Network Access (Local Network):${NC}"
+        echo -e "${WHITE}     Grading Service:    http://$LOCAL_IP:3000${NC}"
+        echo -e "${WHITE}     Conversion Service: http://$LOCAL_IP:5001${NC}"
+        echo -e "${WHITE}     Frontend:           http://$LOCAL_IP:5173${NC}"
+        echo ""
+    fi
+    
+    if [ -n "$EXTERNAL_IP" ]; then
+        echo -e "${WHITE}   External Access (Internet):${NC}"
+        echo -e "${WHITE}     Grading Service:    http://$EXTERNAL_IP:3000${NC}"
+        echo -e "${WHITE}     Conversion Service: http://$EXTERNAL_IP:5001${NC}"
+        echo -e "${WHITE}     Frontend:           http://$EXTERNAL_IP:5173${NC}"
+        echo ""
+    fi
     echo ""
     
     echo -e "${YELLOW}[WAIT] Waiting for services to start...${NC}"
@@ -227,11 +355,21 @@ main() {
     check_service_health "Conversion Service" "http://localhost:5001/health"
     
     echo ""
-    echo -e "${CYAN}[ACCESS] Please visit in browser: http://localhost:5173${NC}"
+    echo -e "${CYAN}[ACCESS] Please visit in browser:${NC}"
+    echo -e "${WHITE}   Local:    http://localhost:5173${NC}"
+    if [ -n "$LOCAL_IP" ]; then
+        echo -e "${WHITE}   Network:  http://$LOCAL_IP:5173${NC}"
+    fi
+    if [ -n "$EXTERNAL_IP" ]; then
+        echo -e "${WHITE}   External: http://$EXTERNAL_IP:5173${NC}"
+    fi
     echo -e "${GREEN}[READY] System is ready!${NC}"
     echo ""
     echo -e "${CYAN}[INFO] Instructions:${NC}"
-    echo -e "${GRAY}   - Services are running in the background${NC}"
+    echo -e "${GRAY}   - Services are running independently in the background${NC}"
+    echo -e "${GRAY}   - You can safely close this terminal${NC}"
+    echo -e "${GRAY}   - Services are accessible externally on all network interfaces (0.0.0.0)${NC}"
+    echo -e "${GRAY}   - Make sure firewall allows access to ports 3000, 5001, 5173${NC}"
     echo -e "${GRAY}   - To stop all services, run: ./stop.sh${NC}"
     echo -e "${GRAY}   - Service logs are in ./logs/ directory${NC}"
     echo -e "${GRAY}   - PID file location: $PID_FILE${NC}"
@@ -244,12 +382,9 @@ main() {
         open "http://localhost:5173" 2>/dev/null || true
     fi
     
-    echo -e "${WHITE}Press Ctrl+C to exit this script (services will continue running)${NC}"
-    
-    # Keep script running until user interrupts
-    while true; do
-        sleep 1
-    done
+    echo -e "${WHITE}Services are now running independently. You can close this terminal.${NC}"
+    echo -e "${WHITE}Press Enter to exit this script...${NC}"
+    read -r
 }
 
 # Run main function

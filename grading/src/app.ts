@@ -19,7 +19,7 @@ import { logger } from './utils/logger';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);
 
 // Security middleware with proper CORS policy
 app.use(helmet({
@@ -43,14 +43,27 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration - allow all origins for static files
+// CORS configuration - allow external access
 app.use(cors({
 	origin: function(origin, callback) {
-		// Allow all origins for static files, restrict API calls
-		if (!origin || origin.includes('localhost')) {
-			callback(null, true);
+		// In development, allow all origins
+		// In production, you should specify your domain(s)
+		if (process.env.NODE_ENV === 'production') {
+			// For production, add your actual domain(s) here
+			const allowedOrigins = [
+				'http://localhost:5173',
+				'http://localhost:3000',
+				// Add your production domain here
+				// 'https://yourdomain.com'
+			];
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
 		} else {
-			callback(null, process.env.NODE_ENV !== 'production');
+			// Development: allow all origins
+			callback(null, true);
 		}
 	},
 	credentials: true,
@@ -127,8 +140,8 @@ const startServer = async () => {
 		await AppDataSource.initialize();
 		logger.info('Database connection established');
 		
-		app.listen(PORT, () => {
-			logger.info(`Grading service running on port ${PORT}`);
+		app.listen(PORT, '0.0.0.0', () => {
+			logger.info(`Grading service running on 0.0.0.0:${PORT}`);
 			logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
 		});
 	} catch (error) {

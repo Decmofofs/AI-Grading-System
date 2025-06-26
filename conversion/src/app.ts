@@ -14,7 +14,7 @@ import { logger } from './utils/logger';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = parseInt(process.env.PORT || '5001', 10);
 
 // Security middleware
 app.use(helmet());
@@ -28,11 +28,29 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// CORS configuration - allow external access
 app.use(cors({
-	origin: process.env.NODE_ENV === 'production' 
-		? ['http://localhost:5173', 'http://localhost:3000']
-		: ['http://localhost:5173', 'http://localhost:3000'],
+	origin: function(origin, callback) {
+		// In development, allow all origins
+		// In production, you should specify your domain(s)
+		if (process.env.NODE_ENV === 'production') {
+			// For production, add your actual domain(s) here
+			const allowedOrigins = [
+				'http://localhost:5173',
+				'http://localhost:3000',
+				// Add your production domain here
+				// 'https://yourdomain.com'
+			];
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
+		} else {
+			// Development: allow all origins
+			callback(null, true);
+		}
+	},
 	credentials: true
 }));
 
@@ -62,8 +80,8 @@ app.get('/health', (req: express.Request, res: express.Response) => {
 app.use(errorHandler);
 
 // Start server
-app.listen(PORT, () => {
-	logger.info(`Conversion service running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+	logger.info(`Conversion service running on 0.0.0.0:${PORT}`);
 	logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
